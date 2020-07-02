@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.bonc.tianjin.guotou.dao.OpsCjyFormulaDao" >
+<!-- 查询所有的公式任务-->
+  <select id="queryInfoList" resultType="com.bonc.tianjin.guotou.model.OpsCjyFormula">
+    SELECT
+    formulaId,
+    formulaName,
+    formulaStr,
+    orderNo,
+    inInfo,
+    outInfo,
+    outState,
+    outTime,
+    state,
+    create_time as createTime,
+    update_time as updateTime
+    FROM ops_cjy_formula where state=1
+  </select>
+
+</mapper>
