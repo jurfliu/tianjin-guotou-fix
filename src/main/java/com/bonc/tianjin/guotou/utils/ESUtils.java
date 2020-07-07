@@ -4,6 +4,8 @@ import org.elasticsearch.client.Client;
 import org.elasticsearch.client.transport.TransportClient;
 import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.common.transport.InetSocketTransportAddress;
+import org.elasticsearch.common.transport.TransportAddress;
+import org.elasticsearch.transport.client.PreBuiltTransportClient;
 
 import java.net.InetAddress;
 
@@ -14,11 +16,6 @@ import java.net.InetAddress;
 */
 public class ESUtils {
     public static Client client=null;
-    private final static Integer PORT = 32016; //java端口为9300
-    private final static String ES_NAME = "tianjin-es";  //es名字
-    private final static String HOST1 = "192.168.168.162";  //es名字
-    private final static String HOST2 = "192.168.168.161";  //es名字
-    private final static String HOST3 = "192.168.168.160";  //es名字
 
     /**
      * 方法描述：    获取连接
@@ -27,21 +24,22 @@ public class ESUtils {
      * @param:
      * @return:
      **/
-    public static Client getESClientConnection() {
+    public static Client getESClientConnection(String indexName,String typeName,String clusterName,String nodes) {
         if (client == null) {
-            System.err.println("连接----------------------------");
+            System.err.println("-------连接es----------------------------");
             System.setProperty("es.set.netty.runtime.available.processors", "false");
             try {
                 //设置集群名称
-                Settings settings = Settings.builder().put("cluster.name", ES_NAME)
+                Settings settings = Settings.builder().put("cluster.name", clusterName)
                         .put("client.transport.sniff", true).build();
 
-
+                   String esNodes[]=nodes.split(",");
                 //创建client
+                String host=esNodes[0].split(":")[0];
+                int port=Integer.parseInt(esNodes[0].split(":")[1]);
                 client = TransportClient.builder().settings(settings).build()
-                        .addTransportAddress(new InetSocketTransportAddress(InetAddress.getByName(HOST1), PORT))
-                        .addTransportAddress(new InetSocketTransportAddress(InetAddress.getByName(HOST2), PORT))
-                        .addTransportAddress(new InetSocketTransportAddress(InetAddress.getByName(HOST3), PORT));
+                        .addTransportAddress(new InetSocketTransportAddress(InetAddress.getByName(host), port));
+
             } catch (Exception ex) {
                 ex.printStackTrace();
                 System.out.println(ex.getMessage());

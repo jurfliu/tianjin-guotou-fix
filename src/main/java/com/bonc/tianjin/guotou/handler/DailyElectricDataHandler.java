@@ -1,6 +1,7 @@
 package com.bonc.tianjin.guotou.handler;
 
 import com.bonc.tianjin.guotou.config.EsParamConfig;
+import com.bonc.tianjin.guotou.config.InitEsConnectionCofnig;
 import com.bonc.tianjin.guotou.model.OpsCjyFormula;
 import com.bonc.tianjin.guotou.service.OpsCjyFormulaService;
 import com.bonc.tianjin.guotou.utils.ESUtils;
@@ -9,6 +10,7 @@ import org.elasticsearch.client.Client;
 import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.SearchHit;
+import org.elasticsearch.search.sort.SortOrder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,24 +31,29 @@ public class DailyElectricDataHandler implements Executable{
     private OpsCjyFormulaService opsCjyFormulaService;//数据库
     @Autowired
     private EsParamConfig esParamConfig;
+    @Autowired
+    private InitEsConnectionCofnig esConnectionCofnig;
     @Override
     public void execute(String[] args) throws ParseException, InterruptedException {
-        System.out.println("获取es的配置内容:"+esParamConfig.getIndexName());
-        //建立连接
-        Client transportClient = ESUtils.getESClientConnection();
+       logger.info("初始化es连接客户端.....");
+       Client transportClient= esConnectionCofnig.initEsConnection();
+       //1.查询公式列表
         List<OpsCjyFormula> opcList= opsCjyFormulaService.queryInfoList();
         for(OpsCjyFormula opsCjyFormula:opcList){
-            //System.out.println("meternameStr:"+opsCjyFormula.getFormulaStr());
-            System.out.println("====================");
-            String youbianArray=opsCjyFormula.getFormulaStr().split("=")[1];
-            //System.out.println("要匹配的句子:"+youbianArray);
-           List<String> regList= regMatch(youbianArray);
+            int id= opsCjyFormula.getFormulaId();
+            System.out.println("formula的主建id:"+id);
+            String formulaLeftName=opsCjyFormula.getFormulaStr().split("=")[0];
+            String formulaRightStr=opsCjyFormula.getFormulaStr().split("=")[1];
+           System.out.println("公式串左边的formulaLeftName:"+formulaLeftName);
+            formulaRightStr=formulaRightStr.replace("\r","").replace("\n","");
+           System.out.println("公式串右边的formulRightStr:"+formulaRightStr);
+           List<String> regList= regMatch(formulaRightStr);
            for(String pointName:regList){
-            //   System.out.println("pointNmae:"+pointName);
                pointName=pointName.replace("${","").replace("}","");
-               System.out.println("pointNmae:"+pointName);
+               System.out.println("匹配后：pointNmae:"+pointName);
                queryEsData( transportClient, pointName);
            }
+            System.out.println("====================");
 
         }
     }
@@ -55,16 +62,14 @@ public class DailyElectricDataHandler implements Executable{
         BoolQueryBuilder builder = QueryBuilders.boolQuery()
                 .must(QueryBuilders.termQuery("METERNAME",pointName));
                // .must(QueryBuilders.rangeQuery("DATETIME").gte(startTime).lte(endTime));
-        System.out.println("sql:"+builder.toString());
-
+        //System.out.println("sql:"+builder.toString());
         //执行查询
         SearchResponse searchResponse = transportClient.prepareSearch(esParamConfig.getIndexName())  //设置索引
                 .setTypes(esParamConfig.getTypeName())                     //设置类型
                 .setQuery(builder)                             //设置查询条件
                 .setSize(1)
-                //.setsor//设置返回数据条数
+                .addSort("DATETIME", SortOrder.DESC)
                 .execute().actionGet();
-
         //遍历结果
         SearchHit[] hits = searchResponse.getHits().getHits();
         for(SearchHit hit : hits){
@@ -75,13 +80,18 @@ public class DailyElectricDataHandler implements Executable{
             System.out.println("METERNAME:"+meterName+"  >>>>:value:"+value);
         }
     }
+
+    /**
+     * 正则匹配所要的数据
+     * @param line
+     * @return
+     */
     public List<String>  regMatch(String line){
         List<String> list=new ArrayList<String>();
         line=line.replace("\r","").replace("\n","");
         String pattern="\\$\\{(.*?)\\}";
         // 创建 Pattern 对象
         Pattern r = Pattern.compile(pattern);
-
         // 现在创建 matcher 对象
         Matcher m = r.matcher(line);
         while(m.find( )) {
