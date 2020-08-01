@@ -35,7 +35,7 @@ import java.util.Map;
  **/
 @Component
 public class DailyTotalYesterdayMaxPowerHandler {
-    private static Logger logger = LoggerFactory.getLogger(DailyUnionNetTotalHandler.class);
+    private static Logger logger = LoggerFactory.getLogger(DailyTotalYesterdayMaxPowerHandler.class);
     @Autowired
     private DailyUnionBuyFormulaService dailyUnionBuyFormulaService;//数据库
     @Autowired
@@ -49,7 +49,8 @@ public class DailyTotalYesterdayMaxPowerHandler {
     * @param []        
     * @return void
     */
-    @Scheduled(cron="0 04 14 * * ?")
+    //@Scheduled(cron="0 04 14 * * ?")  //测试用
+    @Scheduled(cron = "0 */1 * * * ?")   //每天凌晨1点执行
     public void dailyTotalLastMaxValueTask(){
         //1.计算要执行的日期
         Date singleDate=new Date();
