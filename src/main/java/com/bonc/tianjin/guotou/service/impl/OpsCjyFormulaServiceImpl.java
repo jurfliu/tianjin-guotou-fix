@@ -1,9 +1,10 @@
-package com.bonc.tianjin.guotou.service;
+package com.bonc.tianjin.guotou.service.impl;
 
 
 import com.bonc.tianjin.guotou.config.EsParamConfig;
 import com.bonc.tianjin.guotou.dao.OpsCjyFormulaDao;
 import com.bonc.tianjin.guotou.model.OpsCjyFormula;
+import com.bonc.tianjin.guotou.service.OpsCjyFormulaService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

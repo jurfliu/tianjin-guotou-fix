@@ -3,11 +3,18 @@ package com.bonc.tianjin.guotou.model;
 
 import java.io.Serializable;
 import java.util.Date;
+/**
+* @author liujianfu
+* @description       es的type和index
+* @date 2020/7/31 0031 下午 4:58
+* @param
+* @return
+*/
 
 //@Document(indexName = "#{esMyConfig.indexName}",type="#{esMyConfig.typeName}")
 public class CalcDpStore implements Serializable {
     private String METERNAME;
-    private Date DATETIME;
+    private long DATETIME;
     private Double READING;
 
     public CalcDpStore() {
@@ -22,11 +29,11 @@ public class CalcDpStore implements Serializable {
         this.METERNAME = METERNAME;
     }
 
-    public Date getDATETIME() {
+    public long getDATETIME() {
         return DATETIME;
     }
 
-    public void setDATETIME(Date DATETIME) {
+    public void setDATETIME(long DATETIME) {
         this.DATETIME = DATETIME;
     }
 

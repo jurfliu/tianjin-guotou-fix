@@ -16,9 +16,13 @@ import java.net.InetAddress;
 */
 public class ESUtils {
     public static Client client=null;
+    private static int hostPort=32016;
+    private static String  hostClusterNode1="192.168.168.160";
+    private static String  hostClusterNode2="192.168.168.161";
+    private static String  hostClusterNode3="192.168.168.162";
 
     /**
-     * 方法描述：    获取连接
+     * 方法描述：    公共获取连接
      * @auther:    ypy
      * @data:      2019/3/4 17:44
      * @param:
@@ -31,7 +35,8 @@ public class ESUtils {
             try {
                 //设置集群名称
                 Settings settings = Settings.builder().put("cluster.name", clusterName)
-                        .put("client.transport.sniff", true).build();
+                        .put("client.transport.sniff", true)
+                        .put("client.transport.ping_timeout", "600s").build();
 
                    String esNodes[]=nodes.split(",");
                 //创建client
@@ -39,7 +44,9 @@ public class ESUtils {
                 int port=Integer.parseInt(esNodes[0].split(":")[1]);
                 client = TransportClient.builder().settings(settings).build()
                         .addTransportAddress(new InetSocketTransportAddress(InetAddress.getByName(host), port));
-
+                       // .addTransportAddress(new InetSocketTransportAddress(InetAddress.getByName(hostClusterNode1), hostPort))
+                       // .addTransportAddress(new InetSocketTransportAddress(InetAddress.getByName(hostClusterNode2), hostPort))
+                        //.addTransportAddress(new InetSocketTransportAddress(InetAddress.getByName(hostClusterNode3), hostPort));
             } catch (Exception ex) {
                 ex.printStackTrace();
                 System.out.println(ex.getMessage());
@@ -49,5 +56,37 @@ public class ESUtils {
             }
         }
         return client;
+    }
+    /**
+     * 方法描述：    获取连接
+     * @auther:
+     * @data:      2019/3/4 17:44
+     * @param:
+     * @return:
+     **/
+    public static Client getESClientConnectionByCluster(String indexName,String typeName,String clusterName,String nodes) {
+            System.setProperty("es.set.netty.runtime.available.processors", "false");
+        Client    singleEsClient=null;
+            try {
+                //设置集群名称
+                Settings settings = Settings.builder().put("cluster.name", clusterName)
+                        .put("client.transport.sniff", true)
+                        .put("client.transport.ping_timeout", "600s").build();
+                String esNodes[]=nodes.split(",");
+                //创建client
+                String host=esNodes[0].split(":")[0];
+                int port=Integer.parseInt(esNodes[0].split(":")[1]);
+                singleEsClient = TransportClient.builder().settings(settings).build()
+                 .addTransportAddress(new InetSocketTransportAddress(InetAddress.getByName(hostClusterNode1), hostPort))
+                 .addTransportAddress(new InetSocketTransportAddress(InetAddress.getByName(hostClusterNode2), hostPort))
+                .addTransportAddress(new InetSocketTransportAddress(InetAddress.getByName(hostClusterNode3), hostPort));
+            } catch (Exception ex) {
+                ex.printStackTrace();
+                System.out.println(ex.getMessage());
+                if (client != null) {
+                    client.close();
+                }
+            }
+        return singleEsClient;
     }
 }
