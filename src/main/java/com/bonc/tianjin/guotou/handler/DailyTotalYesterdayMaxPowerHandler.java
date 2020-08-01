@@ -42,6 +42,7 @@ public class DailyTotalYesterdayMaxPowerHandler {
     private InitEsConnectionCofnig esConnectionCofnig;
     @Autowired
     private EsParamConfig esParamConfig;
+    String exeTime=" 01:00:00";//记录执行的时间点
     /**
     * @author liujianfu
     * @description       
@@ -50,7 +51,8 @@ public class DailyTotalYesterdayMaxPowerHandler {
     * @return void
     */
     //@Scheduled(cron="0 04 14 * * ?")  //测试用
-    @Scheduled(cron = "0 */1 * * * ?")   //每天凌晨1点执行
+    //@Scheduled(cron = "0 */1 * * * ?")   //每一分钟执行一次
+    @Scheduled(cron="0 00 01 * * ?")   //凌晨01点去执行
     public void dailyTotalLastMaxValueTask(){
         //1.计算要执行的日期
         Date singleDate=new Date();
@@ -61,7 +63,7 @@ public class DailyTotalYesterdayMaxPowerHandler {
         String startTimeStr = DateUtil.fromatMillisToDate(startTimeStamps);
         String endTimeStr = DateUtil.fromatMillisToDate(endTimeStamps);
         logger.info("统计上一天开始的毫秒数:"+startTimeStamps+ " 统计上一天开始的日期:" + startTimeStr + " 统计今天开始的毫秒数"+endTimeStamps+" 统计今天开始的日期:" + endTimeStr);
-        String today01Time=endTimeStr.split(" ")[0]+" 01:00:00";
+        String today01Time=endTimeStr.split(" ")[0]+exeTime;
         long time=DateUtil.getStringToDate(today01Time,"yyyy-MM-dd HH:mm:ss").getTime();
         logger.info("es的入库时间为:time:"+time);
         //2.查询公式列表
