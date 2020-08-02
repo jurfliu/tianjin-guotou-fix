@@ -67,11 +67,14 @@ public class DailyUnionBuyFormula {
      * 备注说明
      */
      private String remark;
-
+     /**
+     *常量系数
+     */
+      private int constantWeight;
     public DailyUnionBuyFormula() {
     }
 
-    public DailyUnionBuyFormula(int formuaPointId, String formulaName, String deviceNodePoint, String yesterdayMaxFormulaName, String calculateFormulaName, String esIndex, String deviceNodeEsType, String totalEsType, int formulaType, int calcualteFormulaState, Date totalYesterdayMaxPowerTime, Date lastCalculateFromulaTime, String remark) {
+    public DailyUnionBuyFormula(int formuaPointId, String formulaName, String deviceNodePoint, String yesterdayMaxFormulaName, String calculateFormulaName, String esIndex, String deviceNodeEsType, String totalEsType, int formulaType, int calcualteFormulaState, Date totalYesterdayMaxPowerTime, Date lastCalculateFromulaTime, String remark, int constantWeight) {
         this.formuaPointId = formuaPointId;
         this.formulaName = formulaName;
         this.deviceNodePoint = deviceNodePoint;
@@ -85,6 +88,7 @@ public class DailyUnionBuyFormula {
         this.totalYesterdayMaxPowerTime = totalYesterdayMaxPowerTime;
         this.lastCalculateFromulaTime = lastCalculateFromulaTime;
         this.remark = remark;
+        this.constantWeight = constantWeight;
     }
 
     public int getFormuaPointId() {
@@ -182,12 +186,19 @@ public class DailyUnionBuyFormula {
     public void setLastCalculateFromulaTime(Date lastCalculateFromulaTime) {
         this.lastCalculateFromulaTime = lastCalculateFromulaTime;
     }
-
     public String getRemark() {
         return remark;
     }
 
     public void setRemark(String remark) {
         this.remark = remark;
+    }
+
+    public int getConstantWeight() {
+        return constantWeight;
+    }
+
+    public void setConstantWeight(int constantWeight) {
+        this.constantWeight = constantWeight;
     }
 }

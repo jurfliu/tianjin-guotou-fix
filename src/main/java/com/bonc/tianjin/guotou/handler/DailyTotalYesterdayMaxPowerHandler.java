@@ -50,9 +50,9 @@ public class DailyTotalYesterdayMaxPowerHandler {
     * @param []        
     * @return void
     */
-    //@Scheduled(cron="0 04 14 * * ?")  //测试用
+   // @Scheduled(cron="0 55 07 * * ?")  //测试用
     //@Scheduled(cron = "0 */1 * * * ?")   //每一分钟执行一次
-    @Scheduled(cron="0 00 01 * * ?")   //凌晨01点去执行
+    //@Scheduled(cron="0 00 01 * * ?")   //凌晨01点去执行
     public void dailyTotalLastMaxValueTask(){
         //1.计算要执行的日期
         Date singleDate=new Date();

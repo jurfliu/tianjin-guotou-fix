@@ -15,7 +15,7 @@ import java.net.InetAddress;
 * @Date:           2019/3/4 17:44
 */
 public class ESUtils {
-    public static Client client=null;
+    //public static Client client=null;
     private static int hostPort=32016;
     private static String  hostClusterNode1="192.168.168.160";
     private static String  hostClusterNode2="192.168.168.161";
@@ -29,7 +29,8 @@ public class ESUtils {
      * @return:
      **/
     public static Client getESClientConnection(String indexName,String typeName,String clusterName,String nodes) {
-        if (client == null) {
+        Client    singleEsClient=null;
+        if (singleEsClient == null) {
             System.err.println("-------连接es----------------------------");
             System.setProperty("es.set.netty.runtime.available.processors", "false");
             try {
@@ -42,7 +43,7 @@ public class ESUtils {
                 //创建client
                 String host=esNodes[0].split(":")[0];
                 int port=Integer.parseInt(esNodes[0].split(":")[1]);
-                client = TransportClient.builder().settings(settings).build()
+                singleEsClient = TransportClient.builder().settings(settings).build()
                         .addTransportAddress(new InetSocketTransportAddress(InetAddress.getByName(host), port));
                        // .addTransportAddress(new InetSocketTransportAddress(InetAddress.getByName(hostClusterNode1), hostPort))
                        // .addTransportAddress(new InetSocketTransportAddress(InetAddress.getByName(hostClusterNode2), hostPort))
@@ -50,12 +51,12 @@ public class ESUtils {
             } catch (Exception ex) {
                 ex.printStackTrace();
                 System.out.println(ex.getMessage());
-                if (client != null) {
-                    client.close();
+                if (singleEsClient != null) {
+                    singleEsClient.close();
                 }
             }
         }
-        return client;
+        return singleEsClient;
     }
     /**
      * 方法描述：    获取连接
@@ -83,8 +84,8 @@ public class ESUtils {
             } catch (Exception ex) {
                 ex.printStackTrace();
                 System.out.println(ex.getMessage());
-                if (client != null) {
-                    client.close();
+                if (singleEsClient != null) {
+                    singleEsClient.close();
                 }
             }
         return singleEsClient;

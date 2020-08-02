@@ -79,14 +79,22 @@ public class DateUtil {
         }
         return date;
     }
-
+    /**
+     * long转date
+     * @param dateLong
+     * @return
+     */
+    public static Date longToDate(long dateLong){
+        Date date = new Date(dateLong);
+        return date;
+    }
     public static void main(String[] args) {
         Date singleDate=new Date();
         //昨天开始的日期
         long startTimeStamps = DateUtil.getYestesdayTime(singleDate, 1,0).getTime();
         System.out.println("startTimeStamps:"+startTimeStamps);
         //今天开始的日期
-        long endTimeStamps = DateUtil.getYestesdayTime(singleDate, 0,0).getTime();
+        long endTimeStamps = DateUtil.getYestesdayTime(singleDate, 1,1).getTime();
         System.out.println("endTimeStamps:"+endTimeStamps);
         String startTimeStr = DateUtil.fromatMillisToDate(startTimeStamps);
         String endTimeStr = DateUtil.fromatMillisToDate(endTimeStamps);
@@ -94,7 +102,8 @@ public class DateUtil {
         String today01Time=endTimeStr.split(" ")[0]+" 01:00:00";
         long time=getStringToDate(today01Time,"yyyy-MM-dd HH:mm:ss").getTime();
         System.out.println("time:"+time);
-
+       Date d= longToDate(startTimeStamps);
+       System.out.println("d:"+d);
     }
 
 }

@@ -39,12 +39,12 @@ public class TestEs {
 
 
         client = ESUtils.getESClientConnection(indexName,typeName,clusterName,nodes);
-       // createEsIndex(indexName);
+        createEsIndex(indexName);
        // addEsData( indexName, typeName);
       //  String name="港狮光伏电站日发电量总和new_gszygglh";
        // addEsData(indexName,typeName,name);
         //updateIndexData(indexName,typeName,"AXMnCp8y578bR0-tYb3g");
-        deleteById(indexName,typeName,"AXNS9p-tE4opSbZV1Osv");
+       // deleteById(indexName,typeName,"AXNS9p-tE4opSbZV1Osv");
        // String pointName="佰达昨日并网电量最大值_佰达昨日并网电量最大值";
         //queryEsData(client,pointName,indexName, typeName);
         System.out.println("over!!!!!!!!!!!!");
