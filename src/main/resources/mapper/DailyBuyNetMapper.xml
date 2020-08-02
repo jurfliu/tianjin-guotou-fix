@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.bonc.tianjin.guotou.dao.DailyBuyNetDao" >
+<!-- 查询所有的日网公式-->
+  <select id="queryDailyBuyDataList" resultType="com.bonc.tianjin.guotou.model.DailyUnionBuyFormula">
+    SELECT
+    formua_point_id as formuaPointId,
+    formula_name as formulaName,
+    device_node_point as deviceNodePoint,
+    yesterday_max_formula_name as yesterdayMaxFormulaName,
+    calculate_formula_name as calculateFormulaName,
+    es_index as esIndex,
+    device_node_es_type as deviceNodeEsType,
+    total_es_type as totalEsType,
+    formula_type  as formulaType,
+    last_calculate_fromula_time as lastCalculateFromulaTime,
+    constant_weight as constantWeight
+    FROM daily_union_buy_formula where formula_type=2 and calcualte_formula_state=0
+  </select>
+<!-- 记录上一天最大电量值的执行时间  -->
+  <update id="updateLastBuyNetCalulateTime" parameterType="com.bonc.tianjin.guotou.model.DailyUnionBuyFormula">
+    update daily_union_buy_formula set last_calculate_fromula_time=#{lastCalculateFromulaTime,jdbcType=TIMESTAMP} where formua_point_id=#{formuaPointId,jdbcType=INTEGER}
+  </update>
+
+
+
+</mapper>

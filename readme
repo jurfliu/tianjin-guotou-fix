@@ -1,0 +1,19 @@
+#分析前一天设备节点最大值的程序      DailyTotalYesterdayMaxPowerHandler   端口8091  每天凌晨01点执行   打包注释掉  DailyUnionNetHandler，DailyBuyNetHandler 上的定时注解
+#日并网分析程序      DailyUnionNetHandler   端口8092  每3分种执行一次     打包注释掉  DailyTotalYesterdayMaxPowerHandler ，DailyBuyNetHandler 上的定时注解
+#日购网分析程序      DailyBuyNetHandler     端口8093  每3分种执行一次     打包注释掉  DailyTotalYesterdayMaxPowerHandler ，DailyUnionNetHandler 上的定时注解
+
+#es的数据库说明  es的索引： data_store       mqtt_xxxx  存储每个设备节点的实时数据   统计type： CALC_DP_STORE  用于存储算法统计后的结果
+#求前一天最大值
+去实时库中查询该设备节点，昨天一天的最大值，将统计结果存储到这个CALC_DP_STORE 库中
+#日并网程序
+实时的查询出某个设备节点的值（去该节点对应的实时库mqtt_xxxx查询） 减去  该节点昨天的最大值（去CALC_DP_STORE该库查询），然后得出的差值，乘以该公式的常量系数
+将结果值入到这个CALC_DP_STORE 库中。
+
+
+#每个设备节点每一分钟都会新增数据到es
+
+#  nohup java -jar tianjin-guotou-fix-8091.jar > output.log 2>&1&
+# nohup java -jar tianjin-guotou-fix-union-8092.jar > unionoutput.log 2>&1&
+
+
+# nohup java -jar tianjin-guotou-fix-buy-8093.jar > buyoutput.log 2>&1&
